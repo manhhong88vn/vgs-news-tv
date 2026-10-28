@@ -1,7 +1,9 @@
 package com.vgs.newstv;
 
 import android.app.PictureInPictureParams;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Mở từ thẻ trên màn hình chính: đi thẳng tới màn hình đọc tin, không vào PiP/danh sách
+        if (openNewsFromCard(getIntent())) {
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         normalContainer = findViewById(R.id.normalContainer);
@@ -99,6 +108,46 @@ public class MainActivity extends AppCompatActivity {
 
         // BƯỚC 2: Tự động làm mới tin mỗi 10 phút
         startAutoRefreshTimer();
+
+        // Hướng A: đăng ký/làm mới hàng thẻ tin trên màn hình chính (không làm gì nếu TV không hỗ trợ)
+        ChannelHelper.setup(this);
+    }
+
+    // Mở tin từ thẻ Preview Channel. Intent này có thể đến từ app khác nên kiểm tra miền trước khi dùng.
+    private boolean openNewsFromCard(Intent in) {
+        if (in == null || !ChannelHelper.ACTION_OPEN_NEWS.equals(in.getAction())) return false;
+        String title = in.getStringExtra("title");
+        String link = in.getStringExtra("link");
+        if (title == null || !isHttpsHost(link, "vnexpress.net")) return false;
+
+        String image = in.getStringExtra("image");
+        if (!isHttpsHost(image, "vnexpress.net") && !isHttpsHost(image, "vnecdn.net")) {
+            image = "";
+        }
+        String desc = in.getStringExtra("description");
+
+        Intent detail = new Intent(this, DetailActivity.class);
+        detail.putExtra("title", title);
+        detail.putExtra("image", image);
+        detail.putExtra("description", desc == null ? "" : desc);
+        // SUA LOI GOP BAN: link da duoc kiem tra HTTPS vnexpress.net o tren,
+        // phai chuyen tiep sang DetailActivity thi moi tai duoc bai day du.
+        // Ban zip goc thieu dong nay nen chi hien mo ta RSS.
+        detail.putExtra("link", link);
+        startActivity(detail);
+        return true;
+    }
+
+    private static boolean isHttpsHost(String url, String domain) {
+        if (url == null) return false;
+        try {
+            Uri u = Uri.parse(url);
+            String host = u.getHost();
+            return "https".equals(u.getScheme()) && host != null
+                    && (host.equals(domain) || host.endsWith("." + domain));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void enterPipModeIfSupported() {
