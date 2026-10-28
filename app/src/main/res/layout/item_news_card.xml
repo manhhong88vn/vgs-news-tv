@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginEnd="20dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/selector_card_focus"
+    android:padding="16dp">
+
+    <!-- Ảnh tin tức góc bo tròn -->
+    <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#1AFFFFFF">
+
+        <ImageView
+            android:id="@+id/imgThumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Tiêu đề tin tức ngắn gọn, tinh tế -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:lineSpacingExtra="3dp" />
+
+</LinearLayout>
