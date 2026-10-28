@@ -65,7 +65,8 @@ public final class ChannelHelper {
     }
 
     /** Chạy ở luồng nền. Trả về true nếu thành công (hoặc không cần làm gì). */
-    static boolean refresh(Context ctx) {
+    // synchronized: tránh 2 lượt làm mới chạy chồng nhau (sẽ đăng thẻ trùng).
+    static synchronized boolean refresh(Context ctx) {
         if (!isSupported(ctx)) return true;
         try {
             long channelId = ensureChannel(ctx);
@@ -85,13 +86,15 @@ public final class ChannelHelper {
             List<Long> oldIds = programIds(ctx, channelId);
 
             int published = 0;
+            int weight = merged.size();   // weight lớn hơn = hiện trước, giữ đúng thứ tự xen kẽ
             for (NewsItem item : merged) {
                 try {
-                    helper.publishPreviewProgram(buildProgram(ctx, channelId, item));
+                    helper.publishPreviewProgram(buildProgram(ctx, channelId, item, weight));
                     published++;
                 } catch (Exception e) {
                     Log.w(TAG, "Không đăng được thẻ", e);
                 }
+                weight--;
             }
             if (published == 0) return false;
 
@@ -149,7 +152,7 @@ public final class ChannelHelper {
         return ids;
     }
 
-    private static PreviewProgram buildProgram(Context ctx, long channelId, NewsItem item) {
+    private static PreviewProgram buildProgram(Context ctx, long channelId, NewsItem item, int weight) {
         String desc = item.getDescription();
         if (desc.length() > DESC_MAX) desc = desc.substring(0, DESC_MAX) + "…";
 
@@ -166,9 +169,10 @@ public final class ChannelHelper {
                 .setTitle(item.getTitle())
                 .setDescription(desc)
                 .setPosterArtAspectRatio(TvContractCompat.PreviewPrograms.ASPECT_RATIO_16_9)
+                .setWeight(weight)
                 .setInternalProviderId(item.getLink())
                 .setIntent(open);
-        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+        if (UrlGuard.isImage(item.getImageUrl())) {
             b.setPosterArtUri(Uri.parse(item.getImageUrl()));
         }
         return b.build();
@@ -184,7 +188,7 @@ public final class ChannelHelper {
             for (List<NewsItem> f : feeds) {
                 if (i < f.size()) {
                     NewsItem n = f.get(i);
-                    if (seen.add(n.getLink())) out.add(n);
+                    if (UrlGuard.isArticle(n.getLink()) && seen.add(n.getLink())) out.add(n);
                 }
             }
         }
