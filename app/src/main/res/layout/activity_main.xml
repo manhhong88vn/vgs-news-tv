@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <!-- Thanh chuyển đổi danh mục tin tức -->
+    <LinearLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/tabFeatured"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:text="🔥 Nổi bật"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:background="@drawable/selector_tab"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/tabEconomy"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:text="💰 Kinh tế"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:background="@drawable/selector_tab"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/tabEntertainment"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:text="🎭 Giải trí"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:background="@drawable/selector_tab"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/tabCars"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:text="🚗 Xe hơi"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:background="@drawable/selector_tab"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp" />
+
+    </LinearLayout>
+
+    <!-- Khung hiển thị đúng 3 thẻ tin tức theo chiều ngang -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/newsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:overScrollMode="never" />
+
+</LinearLayout>
