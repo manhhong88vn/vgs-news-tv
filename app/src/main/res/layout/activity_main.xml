@@ -1,83 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="32dp">
+    android:layout_height="match_parent">
 
-    <!-- Thanh chuyển đổi danh mục tin tức -->
+    <!-- Chế độ toàn màn hình thông thường (Fullscreen / Non-PiP) -->
     <LinearLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
+        android:id="@+id/normalContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="32dp">
 
-        <Button
-            android:id="@+id/tabFeatured"
+        <LinearLayout
+            android:id="@+id/tabLayout"
             android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:text="🔥 Nổi bật"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            android:focusable="true"
-            android:background="@drawable/selector_tab"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_marginEnd="12dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
 
-        <Button
-            android:id="@+id/tabEconomy"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:text="💰 Kinh tế"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            android:focusable="true"
-            android:background="@drawable/selector_tab"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_marginEnd="12dp" />
+            <Button
+                android:id="@+id/tabFeatured"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="🔥 Nổi bật"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:focusable="true"
+                android:background="@drawable/selector_tab"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginEnd="12dp" />
 
-        <Button
-            android:id="@+id/tabEntertainment"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:text="🎭 Giải trí"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            android:focusable="true"
-            android:background="@drawable/selector_tab"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_marginEnd="12dp" />
+            <Button
+                android:id="@+id/tabEconomy"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="💰 Kinh tế"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:focusable="true"
+                android:background="@drawable/selector_tab"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginEnd="12dp" />
 
-        <Button
-            android:id="@+id/tabCars"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:text="🚗 Xe hơi"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            android:focusable="true"
-            android:background="@drawable/selector_tab"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            <Button
+                android:id="@+id/tabEntertainment"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="🎭 Giải trí"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:focusable="true"
+                android:background="@drawable/selector_tab"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginEnd="12dp" />
+
+            <Button
+                android:id="@+id/tabCars"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="🚗 Xe hơi"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:focusable="true"
+                android:background="@drawable/selector_tab"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp" />
+
+        </LinearLayout>
+
+        <!-- Thông báo lỗi mạng hoặc trạng thái tải -->
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đang tải tin tức..."
+            android:textColor="#B0BEC5"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/newsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:overScrollMode="never" />
 
     </LinearLayout>
 
-    <!-- Khung hiển thị đúng 3 thẻ tin tức theo chiều ngang -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/newsRecyclerView"
+    <!-- Chế độ cửa sổ nhỏ PiP (Picture-in-Picture) ở góc màn hình -->
+    <RelativeLayout
+        android:id="@+id/pipContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:overScrollMode="never" />
+        android:background="#D9000000"
+        android:padding="8dp"
+        android:visibility="gone">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/pipImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#66000000" />
+
+        <TextView
+            android:id="@+id/pipCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#42A5F5"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="#80000000"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/pipTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:background="#99000000"
+            android:padding="6dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
