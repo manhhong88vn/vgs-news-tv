@@ -31,13 +31,23 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.TransparentNewsTV" />
 
-        <!-- Cập nhật hàng thẻ tin trên màn hình chính, chạy nền định kỳ -->
+        <!-- Dịch vụ Screensaver Tin Tức chuẩn Android (DreamService) -->
+        <service
+            android:name=".NewsDreamService"
+            android:exported="true"
+            android:label="Tin Tức TV Screensaver"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
         <service
             android:name=".NewsRefreshJobService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <!-- Launcher gọi khi cần khởi tạo kênh (sau khi cài app) -->
         <receiver
             android:name=".InitializeProgramsReceiver"
             android:exported="true">
