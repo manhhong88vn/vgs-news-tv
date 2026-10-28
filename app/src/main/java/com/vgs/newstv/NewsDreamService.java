@@ -51,7 +51,7 @@ public class NewsDreamService extends DreamService {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setInteractive(false); // Chạm hoặc bấm phím bất kỳ sẽ thoát Screensaver ngay
+        setInteractive(false);
         setFullscreen(true);
         setContentView(R.layout.screensaver_news);
 
@@ -94,14 +94,18 @@ public class NewsDreamService extends DreamService {
 
     private void loadNewsForCurrentCategory() {
         new Thread(() -> {
-            List<NewsItem> items = RssFetcher.fetch(RSS_URLS[currentCategoryIndex]);
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (items != null && !items.isEmpty()) {
-                    newsList = items;
-                    currentNewsIndex = 0;
-                    displayCurrentNews();
-                }
-            });
+            try {
+                List<NewsItem> items = RssFetcher.fetch(RSS_URLS[currentCategoryIndex], 20);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (items != null && !items.isEmpty()) {
+                        newsList = items;
+                        currentNewsIndex = 0;
+                        displayCurrentNews();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 
