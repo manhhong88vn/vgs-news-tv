@@ -3,7 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Chế độ toàn màn hình thông thường (Fullscreen / Non-PiP) -->
+    <!-- Che do toan man hinh thong thuong (Fullscreen / Non-PiP).
+         Thay doi duy nhat so voi ban cu: normalContainer duoc chia theo
+         trong so 1 - 4 - 1, de khoang trong tren va duoi trong suot
+         (theme nen mo) cho dong ho / thoi tiet o tren va bieu tuong app
+         o duoi cua man hinh TV van nhin thay duoc, con the tin nam
+         o dai giua. ID va nut tab giu nguyen het, code MainActivity
+         khong can sua. -->
     <LinearLayout
         android:id="@+id/normalContainer"
         android:layout_width="match_parent"
@@ -11,94 +17,117 @@
         android:orientation="vertical"
         android:padding="32dp">
 
+        <!-- Khoang trong tren: cho dong ho / thoi tiet cua TV. -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Dai giua: tab + the tin. -->
         <LinearLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/tabFeatured"
+            <LinearLayout
+                android:id="@+id/tabLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="🔥 Nổi bật"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textAllCaps="false"
-                android:focusable="true"
-                android:background="@drawable/selector_tab"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_marginEnd="12dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
 
-            <Button
-                android:id="@+id/tabEconomy"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="💰 Kinh tế"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textAllCaps="false"
-                android:focusable="true"
-                android:background="@drawable/selector_tab"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_marginEnd="12dp" />
+                <Button
+                    android:id="@+id/tabFeatured"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="🔥 Nổi bật"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:focusable="true"
+                    android:background="@drawable/selector_tab"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginEnd="12dp" />
 
-            <Button
-                android:id="@+id/tabEntertainment"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="🎭 Giải trí"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textAllCaps="false"
-                android:focusable="true"
-                android:background="@drawable/selector_tab"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_marginEnd="12dp" />
+                <Button
+                    android:id="@+id/tabEconomy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="💰 Kinh tế"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:focusable="true"
+                    android:background="@drawable/selector_tab"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginEnd="12dp" />
 
-            <Button
-                android:id="@+id/tabCars"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="🚗 Xe hơi"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textAllCaps="false"
-                android:focusable="true"
-                android:background="@drawable/selector_tab"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp" />
+                <Button
+                    android:id="@+id/tabEntertainment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="🎭 Giải trí"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:focusable="true"
+                    android:background="@drawable/selector_tab"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginEnd="12dp" />
+
+                <Button
+                    android:id="@+id/tabCars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="🚗 Xe hơi"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:focusable="true"
+                    android:background="@drawable/selector_tab"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp" />
+
+            </LinearLayout>
+
+            <!-- Thong bao loi mang hoac trang thai tai -->
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đang tải tin tức..."
+                android:textColor="#B0BEC5"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:padding="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/newsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:overScrollMode="never" />
 
         </LinearLayout>
 
-        <!-- Thông báo lỗi mạng hoặc trạng thái tải -->
-        <TextView
-            android:id="@+id/txtStatus"
+        <!-- Khoang trong duoi: cho bieu tuong app cua TV. -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Đang tải tin tức..."
-            android:textColor="#B0BEC5"
-            android:textSize="16sp"
-            android:visibility="gone"
-            android:gravity="center"
-            android:padding="16dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/newsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:overScrollMode="never" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
-    <!-- Chế độ cửa sổ nhỏ PiP (Picture-in-Picture) ở góc màn hình -->
+    <!-- Che do cua so nho PiP (Picture-in-Picture) o goc man hinh.
+         Giu nguyen hoan toan ban cu. -->
     <RelativeLayout
         android:id="@+id/pipContainer"
         android:layout_width="match_parent"
