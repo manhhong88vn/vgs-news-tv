@@ -51,6 +51,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             intent.putExtra("title", item.getTitle());
             intent.putExtra("image", item.getImageUrl());
             intent.putExtra("description", item.getDescription());
+            // THEM: truyen link goc de DetailActivity tai bai day du.
+            // Khong co dong nay thi DetailActivity chi hien mo ta RSS cu.
+            intent.putExtra("link", item.getLink());
             context.startActivity(intent);
         });
     }
