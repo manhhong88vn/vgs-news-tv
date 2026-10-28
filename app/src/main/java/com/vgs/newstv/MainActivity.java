@@ -3,7 +3,6 @@ package com.vgs.newstv;
 import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,18 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -118,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
         if (in == null || !ChannelHelper.ACTION_OPEN_NEWS.equals(in.getAction())) return false;
         String title = in.getStringExtra("title");
         String link = in.getStringExtra("link");
-        if (title == null || !isHttpsHost(link, "vnexpress.net")) return false;
+        if (title == null || !UrlGuard.isArticle(link)) return false;
 
         String image = in.getStringExtra("image");
-        if (!isHttpsHost(image, "vnexpress.net") && !isHttpsHost(image, "vnecdn.net")) {
+        if (!UrlGuard.isImage(image)) {
             image = "";
         }
         String desc = in.getStringExtra("description");
@@ -136,18 +125,6 @@ public class MainActivity extends AppCompatActivity {
         detail.putExtra("link", link);
         startActivity(detail);
         return true;
-    }
-
-    private static boolean isHttpsHost(String url, String domain) {
-        if (url == null) return false;
-        try {
-            Uri u = Uri.parse(url);
-            String host = u.getHost();
-            return "https".equals(u.getScheme()) && host != null
-                    && (host.equals(domain) || host.endsWith("." + domain));
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private void enterPipModeIfSupported() {
@@ -239,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
                     // Đổi sang chuyên mục tiếp theo luân phiên
                     currentCategoryIndex = (currentCategoryIndex + 1) % RSS_URLS.length;
                     selectTab(getCurrentTabButton(), RSS_URLS[currentCategoryIndex], currentCategoryIndex);
+                    // Phải hẹn lượt kế tiếp, nếu không cửa sổ nhỏ sẽ đứng im sau chuyên mục đầu tiên.
+                    autoSlideHandler.postDelayed(this, SLIDE_INTERVAL);
                     return;
                 }
 
@@ -263,41 +242,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected List<NewsItem> doInBackground(String... urls) {
-            List<NewsItem> items = new ArrayList<>();
             try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                conn.setConnectTimeout(8000);
-                conn.setReadTimeout(8000);
-
-                if (isCancelled()) return null;
-
-                InputStream is = conn.getInputStream();
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document doc = builder.parse(is);
-
-                NodeList nodeList = doc.getElementsByTagName("item");
-                int count = Math.min(nodeList.getLength(), 20);
-
-                for (int i = 0; i < count; i++) {
-                    if (isCancelled()) return null;
-                    Element element = (Element) nodeList.item(i);
-                    String title = getTagValue(element, "title");
-                    String link = getTagValue(element, "link");
-                    String rawDesc = getTagValue(element, "description");
-
-                    String imageUrl = extractImageUrl(rawDesc);
-                    String cleanDesc = cleanDescription(rawDesc);
-
-                    items.add(new NewsItem(title, link, imageUrl, cleanDesc));
-                }
+                return RssFetcher.fetch(urls[0], 20);
             } catch (Exception e) {
                 isNetworkError = true;
-                e.printStackTrace();
+                return new ArrayList<>();
             }
-            return items;
         }
 
         @Override
@@ -310,30 +260,10 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 txtStatus.setVisibility(View.GONE);
                 cachedNewsList = result;
+                currentNewsIndex = 0;   // danh sách mới thì chạy từ tin đầu
                 adapter.updateData(result);
             }
         }
-    }
-
-    private String getTagValue(Element element, String tag) {
-        NodeList nl = element.getElementsByTagName(tag);
-        if (nl != null && nl.getLength() > 0) {
-            return nl.item(0).getTextContent();
-        }
-        return "";
-    }
-
-    private String extractImageUrl(String desc) {
-        Pattern pattern = Pattern.compile("src=\"([^\"]+)\"");
-        Matcher matcher = pattern.matcher(desc);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
-
-    private String cleanDescription(String desc) {
-        return desc.replaceAll("<[^>]*>", "").trim();
     }
 
     @Override
