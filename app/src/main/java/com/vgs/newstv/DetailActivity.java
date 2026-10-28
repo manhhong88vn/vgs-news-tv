@@ -102,6 +102,7 @@ public class DetailActivity extends AppCompatActivity {
 
         rssTitle = getStringExtra("title");
         rssImage = getStringExtra("image");
+        if (!UrlGuard.isImage(rssImage)) rssImage = "";
         rssDescription = getStringExtra("description");
         rssLink = getStringExtra("link");
 
@@ -334,24 +335,19 @@ public class DetailActivity extends AppCompatActivity {
     // ---------------- Tai va tach bai ----------------
 
     private boolean isValidArticleUrl(String link) {
-        if (link == null || link.isEmpty()) return false;
-        try {
-            URL url = new URL(link);
-            if (!"https".equalsIgnoreCase(url.getProtocol())) return false;
-            String host = url.getHost() == null ? "" : url.getHost().toLowerCase();
-            return host.equals("vnexpress.net") || host.endsWith(".vnexpress.net");
-        } catch (Exception e) {
-            return false;
-        }
+        return UrlGuard.isArticle(link);
     }
 
     private Article fetchArticle(String link) throws Exception {
         Document doc = Jsoup.connect(link)
                 .userAgent(USER_AGENT)
                 .timeout(TIMEOUT_MS)
-                .maxBodySize(0)
+                .maxBodySize(3 * 1024 * 1024)   // tối đa 3 MB, không để tải vô hạn
                 .followRedirects(true)
                 .get();
+
+        // Bị chuyển hướng ra ngoài vnexpress.net thì bỏ, dùng mô tả RSS.
+        if (!UrlGuard.isArticle(doc.location())) return null;
 
         // Tieu de: h1.title-detail, roi meta og:title, roi <title>.
         String title = "";
@@ -369,6 +365,7 @@ public class DetailActivity extends AppCompatActivity {
         String cover = "";
         Element ogImage = doc.selectFirst("meta[property=og:image]");
         if (ogImage != null) cover = clean(ogImage.attr("content"));
+        if (!UrlGuard.isImage(cover)) cover = "";
 
         // Sapô: p.description dung lam doan mo dau.
         String lead = "";
@@ -382,7 +379,7 @@ public class DetailActivity extends AppCompatActivity {
         cleaned.select("script, style, noscript, iframe, video, form, button, "
                 + "nav, header, footer, aside").remove();
         cleaned.select(".box-related, .list-news, .tag, .author, .social, "
-                + ".box_category, [class*=ads], [class*=advert]").remove();
+                + ".box_category").remove();
 
         List<Block> blocks = new ArrayList<>();
         if (!lead.isEmpty()) {
@@ -503,7 +500,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void addImageBlock(Element container, Element img, List<Block> blocks) {
         String url = getImageUrl(img);
-        if (url.isEmpty()) return;
+        if (url.isEmpty() || !UrlGuard.isImage(url)) return;   // chỉ ảnh HTTPS của VnExpress
         blocks.add(new Block(Kind.IMAGE, null, url));
 
         String caption = "";
@@ -558,8 +555,20 @@ public class DetailActivity extends AppCompatActivity {
         String cls = el.className() == null ? "" : el.className().toLowerCase();
         return cls.contains("box-related") || cls.contains("list-news")
                 || cls.contains("box_category") || cls.contains("social")
-                || cls.contains("ads") || cls.contains("advert")
+                || hasAdClass(el)
                 || cls.contains("related");
+    }
+
+    // So khớp theo từng tên class, tránh bỏ nhầm class chứa chuỗi "ads" như "leads", "uploads".
+    private boolean hasAdClass(Element el) {
+        for (String c : el.classNames()) {
+            String k = c.toLowerCase();
+            if (k.equals("ads") || k.startsWith("ads-") || k.startsWith("ads_")
+                    || k.contains("advert")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String clean(String text) {
