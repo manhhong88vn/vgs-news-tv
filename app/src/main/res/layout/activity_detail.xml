@@ -1,24 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Man doc bai day du.
+     ScrollView giu focus (descendantFocusability="blocksDescendants")
+     de phim len/xuong cua remote cuon trang thay vi chuyen focus
+     sang tung TextView con. Nut Back mac dinh quay lai danh sach. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detailScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#95000000"
     android:padding="48dp"
-    android:focusable="true">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="blocksDescendants"
+    android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/detailContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Chi hien khi tach that bai hoac mat mang. -->
+        <TextView
+            android:id="@+id/detailWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Không tải được bài đầy đủ"
+            android:textColor="#FFC107"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="#33FF9800"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone" />
+
+        <!-- Chi hien trong luc tai bai day du. -->
+        <TextView
+            android:id="@+id/detailStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đang tải bài đầy đủ..."
+            android:textColor="#B0BEC5"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+        <!-- ID cu giu nguyen: detailTitle, detailImage, detailDescription. -->
         <TextView
             android:id="@+id/detailTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:textSize="28sp"
+            android:textSize="34sp"
             android:textStyle="bold"
-            android:lineSpacingExtra="6dp"
+            android:lineSpacingExtra="8dp"
             android:layout_marginBottom="24dp" />
 
         <ImageView
@@ -26,15 +62,26 @@
             android:layout_width="match_parent"
             android:layout_height="360dp"
             android:scaleType="centerCrop"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:visibility="gone" />
 
+        <!-- Chi hien o che do fallback: mo ta RSS cu. -->
         <TextView
             android:id="@+id/detailDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#E0E0E0"
-            android:textSize="20sp"
-            android:lineSpacingExtra="8dp" />
+            android:textSize="24sp"
+            android:lineSpacingExtra="8dp"
+            android:visibility="gone" />
+
+        <!-- Than bai day du duoc DetailActivity them dong vao day:
+             sapo, tieu de muc, doan van, anh + chu thich. -->
+        <LinearLayout
+            android:id="@+id/detailBodyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
     </LinearLayout>
 
