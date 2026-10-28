@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
@@ -29,6 +30,22 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.TransparentNewsTV" />
+
+        <!-- Cập nhật hàng thẻ tin trên màn hình chính, chạy nền định kỳ -->
+        <service
+            android:name=".NewsRefreshJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!-- Launcher gọi khi cần khởi tạo kênh (sau khi cài app) -->
+        <receiver
+            android:name=".InitializeProgramsReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.tv.action.INITIALIZE_PROGRAMS" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
