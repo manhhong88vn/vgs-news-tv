@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0E17">
+
+    <!-- Ảnh nền tin tức phóng to phủ toàn màn hình, làm mờ nghệ thuật -->
+    <ImageView
+        android:id="@+id/dreamImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <!-- Lớp phủ Gradient đen mờ giúp chữ luôn nổi bật và sắc nét -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B305080E" />
+
+    <!-- Đồng hồ to tinh tế góc trên bên phải -->
+    <TextView
+        android:id="@+id/dreamClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="48dp"
+        android:textColor="#E0E6ED"
+        android:textSize="54sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-light" />
+
+    <!-- Dải tin tức nổi bật ở phần dưới màn hình -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
+        android:paddingBottom="56dp">
+
+        <TextView
+            android:id="@+id/dreamCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥 TIN NỔI BẬT"
+            android:textColor="#42A5F5"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/dreamTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            android:lineSpacingExtra="8dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/dreamDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#B0BEC5"
+            android:textSize="22sp"
+            android:lineSpacingExtra="6dp"
+            android:maxLines="3"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+</RelativeLayout>
