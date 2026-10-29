@@ -57,6 +57,15 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".XiaomiScreensaverReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.duokan.intent.action.show.screensaver" />
+                <action android:name="mitv.enter.xiaoai_mode" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
