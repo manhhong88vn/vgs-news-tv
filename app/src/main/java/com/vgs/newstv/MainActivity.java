@@ -100,6 +100,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Hướng A: đăng ký/làm mới hàng thẻ tin trên màn hình chính (không làm gì nếu TV không hỗ trợ)
         ChannelHelper.setup(this);
+
+        // Khởi động dịch vụ lắng nghe màn hình chờ tự động
+        try {
+            Intent serviceIntent = new Intent(this, ScreensaverBridgeService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        } catch (Exception ignored) {}
     }
 
     // Mở tin từ thẻ Preview Channel. Intent này có thể đến từ app khác nên kiểm tra miền trước khi dùng.
